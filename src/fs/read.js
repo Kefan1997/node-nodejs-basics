@@ -1,6 +1,6 @@
 import { promises as fsPromises } from 'fs';
 
-const doesFileExist = async (path) => {
+export const doesPathExist = async (path) => {
   try {
     await fsPromises.access(path);
 
@@ -14,10 +14,11 @@ const doesFileExist = async (path) => {
   }
 };
 
+
 const read = async () => {
   const pathToFile = './src/fs/files/fileToRead.txt';
   try {
-    const isFileExist = await doesFileExist(pathToFile);
+    const isFileExist = await doesPathExist(pathToFile);
 
     if (!isFileExist) {
       throw new Error('FS operation failed');
