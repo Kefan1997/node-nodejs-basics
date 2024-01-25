@@ -15,9 +15,7 @@ const create = async () => {
     OperationError();
   }
 
-  await fsPromises.writeFile(pathToTheFile, content, (error) => {
-    if (error) throw error;
-  });
+  await fsPromises.writeFile(pathToTheFile, content);
 };
 
 await create();

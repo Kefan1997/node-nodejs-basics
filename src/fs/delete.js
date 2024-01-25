@@ -14,9 +14,7 @@ const remove = async () => {
             OperationError()
         }
 
-        fsPromises.unlink(pathToTheFile, (err) => {
-            if (err) throw err;
-        });
+        fsPromises.unlink(pathToTheFile);
     } catch (err) {
         throw err
     }
