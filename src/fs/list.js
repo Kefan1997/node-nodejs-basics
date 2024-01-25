@@ -1,13 +1,19 @@
 import { promises as fsPromises } from 'fs';
 
+import { getPath, doesPathExist, OperationError } from '../helpers/index.js';
+
 const list = async () => {
-  const folderPathName = './src/fs/files';
+  const folderName = 'files';
+
+  const pathToTheFolder = getPath(import.meta.url, folderName);
+  const isPathExist = await doesPathExist(pathToTheFolder);
+
   try {
-    if (!fsPromises.access(folderPathName)) {
-      throw new Error('FS operation failed');
+    if (!isPathExist) {
+      OperationError();
     }
 
-    const files = await fsPromises.readdir(folderPathName);
+    const files = await fsPromises.readdir(pathToTheFolder);
 
     console.log('Array with files', files);
   } catch (err) {
