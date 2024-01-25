@@ -12,7 +12,6 @@ export const getPath = (path, directoryName, fileName = '') => {
 
 export const doesPathExist = async (path) => {
   try {
-    console.log('path', path);
     await fsPromises.access(path);
 
     return true;

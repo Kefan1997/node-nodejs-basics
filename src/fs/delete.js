@@ -1,14 +1,22 @@
-import * as fs from 'fs';
+import { promises as fsPromises } from 'fs';
+
+import { getPath, doesPathExist, OperationError } from '../helpers/index.js';
 
 const remove = async () => {
-    const pathToDeleteFile = './src/fs/files/fileToRemove.txt';
+    const folderName = 'files';
+    const fileNameToDelete = 'fileToRemove.txt';
+
+    const pathToTheFile = getPath(import.meta.url, folderName, fileNameToDelete);
+    const isFileExist = await doesPathExist(pathToTheFile);
 
     try {
-        if(!fs.existsSync(pathToDeleteFile)) {
-            throw new Error('FS operation failed')
+        if(!isFileExist) {
+            OperationError()
         }
 
-        fs.unlinkSync(pathToDeleteFile);
+        fsPromises.unlink(pathToTheFile, (err) => {
+            if (err) throw err;
+        });
     } catch (err) {
         throw err
     }
