@@ -1,18 +1,27 @@
-import * as fs from 'fs';
+import { promises as fsPromises } from 'fs';
+
+import { getPath, doesPathExist, OperationError } from '../helpers/index.js';
 
 const rename = async () => {
-    const renamedFile = './src/fs/files/wrongFilename.txt';
-    const newFileName = './src/fs/files/properFilename.md';
+  const folderName = 'files';
+  const renamedFileName = 'wrongFilename.txt';
+  const newFileName = 'properFilename.md';
 
-    try {
-        if(!fs.existsSync(renamedFile) || fs.existsSync(newFileName)) {
-            throw new Error('FS operation failed')
-        }
+  const pathToRenamedFile = getPath(import.meta.url, folderName, renamedFileName);
+  const pathToNewFile = getPath(import.meta.url, folderName, newFileName);
 
-        fs.renameSync(renamedFile, newFileName)
-    } catch (err) {
-        throw err
+  const isRenamedFileExist = await doesPathExist(pathToRenamedFile);
+  const isNewFileExist = await doesPathExist(pathToNewFile);
+
+  try {
+    if (!isRenamedFileExist || isNewFileExist) {
+      OperationError();
     }
+
+    fsPromises.rename(pathToRenamedFile, pathToNewFile);
+  } catch (err) {
+    throw err;
+  }
 };
 
 await rename();
