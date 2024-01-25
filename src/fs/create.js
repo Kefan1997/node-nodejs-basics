@@ -1,14 +1,22 @@
-import * as fs from 'fs';
+import { promises as fsPromises } from 'fs';
+
+import { doesPathExist, getPath, OperationError } from '../helpers/index.js';
 
 const create = async () => {
-  const filePath = './src/fs/files/fresh.txt';
-  if (fs.existsSync(filePath)) {
-    throw new Error('FS operation failed');
+  const folderName = 'files'
+  const fileName = 'fresh.txt';
+  const content = 'I am fresh and young';
+
+  const pathToTheFile = getPath(import.meta.url, folderName, fileName);
+
+  const isPathExist = await doesPathExist(pathToTheFile);
+
+  if (isPathExist) {
+    OperationError();
   }
-  
-  fs.appendFile(filePath, 'I am fresh and young', (error) => {
+
+  await fsPromises.writeFile(pathToTheFile, content, (error) => {
     if (error) throw error;
-    console.log('Saved!');
   });
 };
 
