@@ -1,30 +1,20 @@
 import { promises as fsPromises } from 'fs';
 
-export const doesPathExist = async (path) => {
-  try {
-    await fsPromises.access(path);
-
-    return true;
-  } catch (err) {
-    if ((err.code = 'ENOENT')) {
-      return false;
-    } else {
-      throw err;
-    }
-  }
-};
-
+import { doesPathExist, OperationError, getPath } from '../helpers/index.js';
 
 const read = async () => {
-  const pathToFile = './src/fs/files/fileToRead.txt';
-  try {
-    const isFileExist = await doesPathExist(pathToFile);
+  const folderName = 'files';
+  const fileName = 'fileToRead.txt';
 
+  const pathToTheFile = getPath(import.meta.url, folderName, fileName);
+  const isFileExist = await doesPathExist(pathToTheFile);
+
+  try {
     if (!isFileExist) {
-      throw new Error('FS operation failed');
+      OperationError();
     }
 
-    const content = await fsPromises.readFile(pathToFile, 'utf-8');
+    const content = await fsPromises.readFile(pathToTheFile, 'utf-8');
 
     console.log(content);
   } catch (err) {
