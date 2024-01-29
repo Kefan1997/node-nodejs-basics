@@ -1,4 +1,4 @@
-import { createReadStream, createWriteStream } from 'fs';
+import { createReadStream, createWriteStream, promises as fsPromises } from 'fs';
 import { createGzip } from 'zlib';
 
 import { getPath } from '../helpers/index.js';
@@ -15,14 +15,23 @@ const compress = async () => {
   const output = createWriteStream(pathToTheCompressedFileName);
   const gzip = createGzip();
 
-  input.pipe(gzip).pipe(output)
+  return new Promise((resolve, reject) => {
+    input.pipe(gzip).pipe(output);
 
-  output.on('finish', () => {
-    console.log(`File ${fileToCompress} compressed to ${compressedFileName}`);
-  });
+    output.on('finish', async () => {
+      console.log(`File ${fileToCompress} compressed to ${compressedFileName}`);
 
-  output.on('error', (error) => {
-    console.error(`Error compressing file: ${error.message}`);
+      try {
+        await fsPromises.unlink(pathToTheFileCompress);
+        resolve();
+      } catch (err) {
+        reject(err);
+      }
+    });
+
+    output.on('error', (error) => {
+      console.error(`Error compressing file: ${error.message}`);
+    });
   });
 };
 
