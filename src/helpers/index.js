@@ -13,7 +13,7 @@ export const getPath = (currentPath, folderName, fileName = '') => {
   }
 };
 
-export const doesFileExist = async (path) => {
+export const doesPathExist = async (path) => {
   try {
     await access(path);
 
