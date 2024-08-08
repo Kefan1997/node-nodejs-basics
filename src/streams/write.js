@@ -1,5 +1,4 @@
 import { createWriteStream } from 'node:fs';
-import { createWriteStream } from 'node:fs';
 import { finished } from 'node:stream/promises';
 
 import { getPath } from '../helpers/index.js';
