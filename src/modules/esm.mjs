@@ -3,6 +3,7 @@ import { release, version } from 'node:os';
 import { createServer as createServerHttp } from 'node:http';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readFile } from 'node:fs/promises';
 
 import './files/c.js';
 
@@ -10,20 +11,27 @@ const random = Math.random();
 
 let unknownObject;
 
+console.log('random', random);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+(async () => {
+  try {
+    const filePath = random > 0.5 ? `${__dirname}/files/a.json` : `${__dirname}/files/b.json`;
+    const fileContent = await readFile(filePath, 'utf-8');
+    unknownObject = JSON.parse(fileContent);
+    console.log(unknownObject);
+  } catch (err) {
+    console.error('Ошибка при чтении файла', err);
+  }
+})();
 console.log("random", random)
 
-if (random > 0.5) {
-    unknownObject = await import('./files/a.json', { assert: { type: 'json' } });
-} else {
-    unknownObject = await import('./files/b.json', { assert: { type: 'json' } });
-}
 
 console.log(`Release ${release()}`);
 console.log(`Version ${version()}`);
 console.log(`Path segment separator is "${path.sep}"`);
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 console.log(`Path to current file is ${__filename}`);
 console.log(`Path to current directory is ${__dirname}`);
